@@ -20,7 +20,7 @@ class PyTest(TestCommand):
 setup(
     name='django-registration-redux-referrals',
     version=get_version().replace(' ', '-'),
-    description='An extensible user-registration application for Django with basic support for email user referrals’,
+    description='An extensible user-registration application for Django with basic support for email user referrals',
     long_description=open('README.rst').read(),
     author='Aurlus Wedava',
     author_email='ismaelwedava@gmail.com',
