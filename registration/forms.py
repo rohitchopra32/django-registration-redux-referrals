@@ -93,3 +93,8 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
         if email_domain in self.bad_domains:
             raise forms.ValidationError(_("Registration using free email addresses is prohibited. Please supply a different email address."))
         return self.cleaned_data['email']
+
+
+class ReferForm(forms.Form):
+    """Email referral form."""
+    email = forms.EmailField()

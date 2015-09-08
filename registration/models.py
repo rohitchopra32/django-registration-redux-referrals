@@ -15,6 +15,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import six
 
 from .users import UserModel, UserModelString
+from django.contrib.auth.models import User
 
 
 try:
@@ -312,3 +313,24 @@ class RegistrationProfile(models.Model):
                 email_message.attach_alternative(message_html, 'text/html')
 
         email_message.send()
+
+
+class ReferCodes(models.Model):
+    """Model holding generated refer codes and the user who generated them"""
+    user = models.ForeignKey(User)
+    code = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name_plural = 'Refer Codes'
+
+    def __str__(self):
+        return self.code
+
+
+class Refer(models.Model):
+    """Model holding the referees and referred"""
+    referrer = models.ForeignKey(User, related_name='original')
+    referred = models.ForeignKey(User, related_name='new')
+
+    def __str__(self):
+        return self.referred.username

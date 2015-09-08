@@ -40,7 +40,7 @@ class _RequestPassingFormView(FormView):
         form = self.get_form(form_class)
         if form.is_valid():
             # Pass request to form_valid.
-            return self.form_valid(request, form)
+            return self.form_valid(request, form, **kwargs)
         else:
             return self.form_invalid(form)
 
@@ -89,6 +89,59 @@ class RegistrationView(_RequestPassingFormView):
 
     def form_valid(self, request, form):
         new_user = self.register(request, form)
+        success_url = self.get_success_url(request, new_user)
+
+        # success_url may be a simple string, or a tuple providing the
+        # full argument set for redirect(). Attempting to unpack it
+        # tells us which one it is.
+        try:
+            to, args, kwargs = success_url
+            return redirect(to, *args, **kwargs)
+        except ValueError:
+            return redirect(success_url)
+
+    def registration_allowed(self, request):
+        """
+        Override this to enable/disable user registration, either
+        globally or on a per-request basis.
+
+        """
+        return True
+
+    def register(self, request, form):
+        """
+        Implement user-registration logic here. Access to both the
+        request and the full cleaned_data of the registration form is
+        available here.
+
+        """
+        raise NotImplementedError
+
+
+class ReferRegistrationView(_RequestPassingFormView):
+    """
+    Base class for user registration views.
+
+    """
+    disallowed_url = 'registration_disallowed'
+    form_class = REGISTRATION_FORM
+    http_method_names = ['get', 'post', 'head', 'options', 'trace']
+    success_url = None
+    template_name = 'registration/registration_form.html'
+
+    @method_decorator(sensitive_post_parameters('password1', 'password2'))
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Check that user signup is allowed before even bothering to
+        dispatch or do other processing.
+
+        """
+        if not self.registration_allowed(request):
+            return redirect(self.disallowed_url)
+        return super(ReferRegistrationView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, request, form, **kwargs):
+        new_user = self.register(request, form, kwargs['refer_key'])
         success_url = self.get_success_url(request, new_user)
 
         # success_url may be a simple string, or a tuple providing the

@@ -24,7 +24,7 @@ from django.conf import settings
 from django.views.generic.base import TemplateView
 
 from .views import ActivationView
-from .views import RegistrationView
+from .views import RegistrationView, ReferRegistrationView
 
 
 urlpatterns = patterns('',
@@ -51,10 +51,11 @@ if getattr(settings, 'INCLUDE_REGISTER_URL', True):
         url(r'^register/$',
             RegistrationView.as_view(),
             name='registration_register'),
+        url(r'^register/(?P<refer_key>\w+)/$', ReferRegistrationView.as_view(), name='refer_register'),
     )
 
 if getattr(settings, 'INCLUDE_AUTH_URLS', True):
     urlpatterns += patterns('', 
         (r'', include('registration.auth_urls')),
     )
-    
+
