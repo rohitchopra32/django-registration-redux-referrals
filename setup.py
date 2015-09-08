@@ -20,11 +20,12 @@ class PyTest(TestCommand):
 setup(
     name='django-registration-redux-referrals',
     version=get_version().replace(' ', '-'),
-    description='An extensible user-registration application for Django',
+    description='An extensible user-registration application for Django with basic support for email user referrals’,
     long_description=open('README.rst').read(),
     author='Aurlus Wedava',
     author_email='ismaelwedava@gmail.com',
     url='https://github.com/Wedava/django-registration-redux-referrals',
+    download_url = 'https://pypi.python.org/packages/source/d/django-registration-redux-referrals/django-registration-redux-referrals.zip#md5=1cd3bc73647648f94820dc53e70ba107',
     package_dir={'registration': 'registration'},
     packages=find_packages(exclude='test_app'),
     tests_require=['pytest-django'],
